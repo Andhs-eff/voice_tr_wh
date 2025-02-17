@@ -162,133 +162,95 @@ function getFormValues() {
 
 let originalOnClick = startButton.onclick;
 
-myProgress.animate(0.7);
-myProgress.setText("70%");
+myProgress.animate(0.3);
+myProgress.setText("30%");
 
 // Create the Web Worker instance
 const translatorWorker = new Worker('translator-worker.js', { type: 'module' });
 
+let iter = 0;
+
+function progressShow() {
+    switch (iter) {
+        case 0:
+            myProgress.animate(0.5);
+            myProgress.setText("50%");
+            break;
+        case 1:
+            myProgress.animate(0.7);
+            myProgress.setText("70%");
+            break;
+        case 2:
+            // Generator is ready—remove the progress bar
+            myProgress.animate(1.0);
+            myProgress.setText("100%");
+            myProgress.destroy();
+            document.getElementById("progress").remove();
+            resultParagraph.style.display = "block";
+            startButton.style.display = "block";
+            createDOMElements();
+            iter = -1;
+            break;
+    }
+}
+
 // Listen for messages from the worker
-translatorWorker.onmessage = function (event) {
+translatorWorker.onmessage = async function (event) {
     const data = event.data;
     if (data.type === 'ready') {
-        // Generator is ready—remove the progress bar
-        myProgress.animate(1.0);
-        myProgress.setText("100%");
-        myProgress.destroy();
-        document.getElementById("progress").remove();
-        resultParagraph.style.display = "block";
-        startButton.style.display = "block";
-        createDOMElements();
-    } else if (data.type === 'result') {
-        // Process the translation result
-        processingImage.style.display = "none";
-        resultParagraph.style.display = "block";
-        resultParagraph.style.fontStyle = "normal";
-        resultParagraph.textContent = data.result;
-        speakText(data.result);
-        originalOnClick = startButton.onclick;
-        restoreButton();
-    } else if (data.type === 'error') {
-        console.error('Translation error:', data.error);
-        // Optionally do additional error handling here
-    }
-};
-
-// Check if SpeechRecognition is supported
-if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    const recognition = new SpeechRecognition();
-
-    recognition.continuous = false;
-    recognition.interimResults = false;
-    recognition.maxAlternatives = 1;
-
-    startButton.addEventListener('click', () => {
-        formValues = getFormValues();
-        recognition.lang = formValues.dropdown2;
-        recognition.start();
-        console.log('Speech recognition started');
-        resultParagraph.textContent = "";
-        init();
-    });
-
-    recognition.addEventListener('result', async (event) => {
-        const speechResult = event.results[0][0].transcript;
-        console.log(speechResult);
+        progressShow();
+        ++iter;
+    } else if (data.type === 'stt_result') {
         processingImage.style.display = "none";
         resultParagraph.style.display = "block";
         resultParagraph.style.fontStyle = "italic";
-        resultParagraph.textContent = speechResult;
-
-        // Force a break so the DOM can update
-        await new Promise(resolve => setTimeout(resolve, 0));
-
-        // Define the prompt and list of messages
-        let prompt;
-        if (formValues.glossary != "") {
-            prompt = `You are a translation machine. Your interface with users will be voice. 
-Your sole function is to translate the provided text from ${codeToLanguage[formValues.dropdown2]} to ${codeToLanguage[formValues.dropdown1]}.
-Do not add, omit, or alter any information.
-Always take into account the terms provided in the glossary: ${formValues.glossary}. 
-The terms of the glossary in ${codeToLanguage[formValues.dropdown2]} must be translated as specified in the glossary, irrespective of their meaning.
-Do not provide explanations, opinions, timestamps or any additional text beyond the direct translation.
-Use polite forms in translation.
-Avoid usage of unpronounceable punctuation.`;
-        } else {
-            prompt = `You are a translation machine. Your interface with users will be voice. 
-Your sole function is to translate the provided text from ${codeToLanguage[formValues.dropdown2]} to ${codeToLanguage[formValues.dropdown1]}.
-Do not add, omit, or alter any information.
-Do not provide explanations, opinions, timestamps or any additional text beyond the direct translation.
-Use polite forms in translation.
-Avoid usage of unpronounceable punctuation.`;
-        }
-
-        const messages = [
-            { role: 'system', content: prompt },
-            { role: 'user', content: speechResult }
-        ];
-
-        console.log(messages);
-
-        // Instead of calling generator directly, post a message to the worker
-        translatorWorker.postMessage({ messages, options: { max_new_tokens: 128, temperature: 0.1 } });
-    });
-
-    recognition.addEventListener('speechend', async () => {
-        recognition.stop();
-        console.log('Speech recognition stopped');
-        await new Promise(resolve => setTimeout(resolve, 3000));
-
-        if (resultParagraph.textContent.trim() === '' || window.getComputedStyle(resultParagraph).fontStyle === "italic") {
-            resultParagraph.style.display = "none";
-            processingImage.style.display = "block";
-        }
-    });
-
-    recognition.addEventListener('error', (event) => {
-        console.log('Error occurred in recognition: ' + event.error);
+        resultParagraph.textContent = data.stt_result;
+    } else if (data.type === 'trans_result') {
+        processingImage.style.display = "none";
+        resultParagraph.style.display = "block";
+        resultParagraph.style.fontStyle = "normal";
+        resultParagraph.textContent = data.trans_result;
+    } else if (data.type === 'tts_result') {
         originalOnClick = startButton.onclick;
         restoreButton();
-    });
-} else {
-    originalOnClick = startButton.onclick;
-    restoreButton();
-    console.log('Speech Recognition is not supported in this browser.');
-}
+        // Create an AudioContext
+        const audioContext = new AudioContext();
+        const audioBuffer = audioContext.createBuffer(1, data.output3.audio.length, data.output3.sampling_rate);
+        audioBuffer.copyToChannel(data.output3.audio, 0);
 
-// Speech synthesis function
-function speakText(text) {
-    if ('speechSynthesis' in window) {
-        const synth = window.speechSynthesis;
-        const utterance = new SpeechSynthesisUtterance(text);
-
-        // Configure the utterance
-        utterance.lang = formValues.dropdown1;
-        utterance.rate = 1.0;
-        synth.speak(utterance);
-    } else {
-        console.log('Speech Synthesis is not supported in this browser.');
+        // Create a BufferSource and play the audio
+        const source = audioContext.createBufferSource();
+        source.buffer = audioBuffer;
+        source.connect(audioContext.destination);
+        source.start();
+    } else if (data.type === 'error') {
+        console.error('Translation error:', data.error);
+        // Optionally do additional error handling here
+        originalOnClick = startButton.onclick;
+        restoreButton();
     }
-}
+};
+
+const myvad = await vad.MicVAD.new({
+    model: "v5",
+    onSpeechStart: () => {
+        console.log("Speech start detected")
+    },
+    onSpeechEnd: async (audio) => {
+        translatorWorker.postMessage({ 'audio': audio, 'src': formValues.dropdown2, 'tgt': formValues.dropdown1 });
+        resultParagraph.style.display = "none";
+        processingImage.style.display = "block";
+        console.log("Speech end detected")
+        myvad.pause();
+    }
+})
+
+startButton.onclick = () => {
+    formValues = getFormValues();
+    myvad.start();
+    resultParagraph.textContent = "";
+    init();
+};
+
+
 

@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Speech Recognition, Translation and Synthesis</title>
     <script src="progressbar.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.14.0/dist/ort.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@ricky0123/vad-web@0.0.22/dist/bundle.min.js"></script>
     <link rel="stylesheet" href="style.css">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <link rel="canonical" href="https://andhs-eff.github.io/voice_tr/" />
@@ -32,18 +34,18 @@
             <div class="dropdown">
                 <label for="dropdown1">Язык перевода:</label>
                 <select id="dropdown1">
-                    <option value="ru-RU">Русский</option>
-                    <option value="en-US" selected>Английский</option>
-                    <option value="zh-CN">Китайский</option>
+                    <option value="russian">Русский</option>
+                    <option value="english" selected>Английский</option>
+                    <option value="chinese">Китайский</option>
                 </select>
             </div>
 
             <div class="dropdown">
                 <label for="dropdown2">Исходный язык:</label>
                 <select id="dropdown2">
-                    <option value="ru-RU" selected>Русский</option>
-                    <option value="en-US">Английский</option>
-                    <option value="zh-CN">Китайский</option>
+                    <option value="russian" selected>Русский</option>
+                    <option value="english">Английский</option>
+                    <option value="chinese">Китайский</option>
                 </select>
             </div>
         </div>
