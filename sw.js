@@ -1,4 +1,4 @@
-var GHPATH = '/voice_tr';
+var GHPATH = '/voice_tr_wh';
 var APP_PREFIX = 'vtr_';
 var VERSION = 'version_001';
 var URLS = [

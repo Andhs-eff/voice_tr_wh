@@ -60,7 +60,7 @@
         if ("serviceWorker" in navigator) {
             window.addEventListener("load", function () {
                 navigator.serviceWorker
-                    .register("/voice_tr/sw.js")
+                    .register("/voice_tr_wh/sw.js")
                     .then(res => console.log("service worker registered"))
                     .catch(err => console.log("service worker not registered", err))
             })
