@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speech Recognition, Translation and Synthesis</title>
+    <script src="progressbar.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="canonical" href="https://andhs-eff.github.io/voice_tr/" />
+    <link rel="manifest" href="/voice_tr/manifest.json" />
+    <!-- ios support -->
+    <link rel="apple-touch-icon" href="icons/icon48.png" />
+    <link rel="apple-touch-icon" href="icons/icon72.png" />
+    <link rel="apple-touch-icon" href="icons/icon96.png" />
+    <link rel="apple-touch-icon" href="icons/icon128.png" />
+    <link rel="apple-touch-icon" href="icons/icon256.png" />
+    <link rel="apple-touch-icon" href="icons/icon512_maskable.png" />
+    <link rel="apple-touch-icon" href="icons/icon512_rounded.png" />
+    <meta name="apple-mobile-web-app-status-bar" content="#db4938" />
+    <meta name="theme-color" content="#db4938" />
+</head>
+
+<body>
+
+    <div class="container">
+        <div id="progress"></div>
+        <img src="progress.gif" id="processing">
+        <div id="result"></div>
+        <div class="dropdown-row">
+            <div class="dropdown">
+                <label for="dropdown1">Язык перевода:</label>
+                <select id="dropdown1">
+                    <option value="ru-RU">Русский</option>
+                    <option value="en-US" selected>Английский</option>
+                    <option value="zh-CN">Китайский</option>
+                </select>
+            </div>
+
+            <div class="dropdown">
+                <label for="dropdown2">Исходный язык:</label>
+                <select id="dropdown2">
+                    <option value="ru-RU" selected>Русский</option>
+                    <option value="en-US">Английский</option>
+                    <option value="zh-CN">Китайский</option>
+                </select>
+            </div>
+        </div>
+        <label for="glossary">Глоссарий:</label>
+        <textarea id="glossary" name="glossary" rows="4" cols="50" placeholder="Введите ваши термины..."></textarea>
+        <main>
+            <button id="startButton">Старт</button>
+        </main>
+    </div>
+    <script type="module" src="./index.js"></script>
+    <script>
+        if ("serviceWorker" in navigator) {
+            window.addEventListener("load", function () {
+                navigator.serviceWorker
+                    .register("/voice_tr/sw.js")
+                    .then(res => console.log("service worker registered"))
+                    .catch(err => console.log("service worker not registered", err))
+            })
+        }
+    </script>
+</body>
+
+</html>

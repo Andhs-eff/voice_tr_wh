@@ -1,0 +1,56 @@
+{
+    "theme_color": "#eae557",
+    "background_color": "#ff772e",
+    "icons": [{
+            "purpose": "maskable",
+            "sizes": "512x512",
+            "src": "/voice_tr/icons/icon512_maskable.png",
+            "type": "image/png"
+        }, 
+        {
+            "purpose": "any",
+            "sizes": "512x512",
+            "src": "/voice_tr/icons/icon512_rounded.png",
+            "type": "image/png"
+        },
+        {
+            "purpose": "any",
+            "sizes": "256x256",
+            "src": "/voice_tr/icons/icon256.png",
+            "type": "image/png"
+        },
+        {
+            "purpose": "any",
+            "sizes": "128x128",
+            "src": "/voice_tr/icons/icon128.png",
+            "type": "image/png"
+        },
+        {
+            "purpose": "any",
+            "sizes": "96x96",
+            "src": "/voice_tr/icons/icon96.png",
+            "type": "image/png"
+        },
+        {
+            "purpose": "any",
+            "sizes": "72x72",
+            "src": "/voice_tr/icons/icon72.png",
+            "type": "image/png"
+        },
+        {
+            "purpose": "any",
+            "sizes": "48x48",
+            "src": "/voice_tr/icons/icon48.png",
+            "type": "image/png"
+        }
+    ],
+    "orientation": "any",
+    "display": "standalone",
+    "dir": "auto",
+    "lang": "en-US",
+    "name": "Voice Translator App",
+    "short_name": "Voice Translator",
+    "start_url": "/voice_tr/",
+    "scope": "/voice_tr/",
+    "description": "Speech Recognition, Translation and Synthesis"
+}
