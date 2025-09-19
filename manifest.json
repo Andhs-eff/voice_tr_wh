@@ -48,8 +48,8 @@
     "display": "standalone",
     "dir": "auto",
     "lang": "en-US",
-    "name": "Voice Translator App",
-    "short_name": "Voice Translator",
+    "name": "Offline Voice Translator App",
+    "short_name": "Offline Voice Translator",
     "start_url": "/voice_tr_wh/",
     "scope": "/voice_tr_wh/",
     "description": "Speech Recognition, Translation and Synthesis"
