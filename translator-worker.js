@@ -49,6 +49,7 @@ onmessage = async function(event) {
     const output2 = await generator(stt_result);
     const trans_result = output2[0].translation_text;
     postMessage({ type: 'trans_result', trans_result });
+    console.log(speaker_embeddings)
     const output3 = await synthesizer(trans_result, { speaker_embeddings });
     this.postMessage({ type: 'tts_result', output3 });
   } catch (err) {
