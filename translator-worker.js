@@ -1,12 +1,12 @@
 // translator-worker.js
-import { pipeline } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.3.3';
+import { pipeline } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.7.3';
 
 let transcriber;
 let generator;
 let synthesizer;
 
 async function initializeTranscriber() {
-  transcriber = await pipeline('automatic-speech-recognition', 'Xenova/whisper-base');
+  transcriber = await pipeline('automatic-speech-recognition', 'nzhenev/whisper-small-ru-1k-steps-ONNX'); //'Xenova/whisper-base');
   // Notify the main thread that the generator is ready
   postMessage({ type: 'ready' });
 }
@@ -23,7 +23,7 @@ async function initializeGenerator() {
 initializeGenerator();
 
 async function initializeSynthesizer() {
-  synthesizer = await pipeline("text-to-speech", "Xenova/mms-tts-eng");
+  synthesizer = await pipeline("text-to-speech", "onnx-community/Kokoro-82M-v1.0-ONNX"); //"Xenova/mms-tts-eng");
   // Notify the main thread that the generator is ready
   postMessage({ type: 'ready' });
 }
