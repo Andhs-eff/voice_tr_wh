@@ -1,6 +1,6 @@
 var GHPATH = '/voice_tr_wh';
 var APP_PREFIX = 'vtr_';
-var VERSION = 'version_009';
+var VERSION = 'version_010';
 var URLS = [
     `${GHPATH}/`,
     `${GHPATH}/index.html`,

@@ -43,13 +43,13 @@ onmessage = async function(event) {
     if (!synthesizer) {
       await initializeSynthesizer();
     }
-    const output1 = await transcriber(audio,  { speaker_embeddings }); //, { language: 'russian', task: 'transcribe' });
+    const output1 = await transcriber(audio); //, { language: 'russian', task: 'transcribe' });
     const stt_result = output1.text;
     postMessage({ type: 'stt_result', stt_result });
     const output2 = await generator(stt_result);
     const trans_result = output2[0].translation_text;
     postMessage({ type: 'trans_result', trans_result });
-    const output3 = await synthesizer(trans_result);
+    const output3 = await synthesizer(trans_result, { speaker_embeddings });
     this.postMessage({ type: 'tts_result', output3 });
   } catch (err) {
     postMessage({ type: 'error', error: err.message });
