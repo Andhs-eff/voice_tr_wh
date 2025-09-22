@@ -4,6 +4,7 @@ import { pipeline } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers
 let transcriber;
 let generator;
 let synthesizer;
+const speaker_embeddings = 'https://huggingface.co/datasets/Xenova/transformers.js-docs/resolve/main/speaker_embeddings.bin';
 
 async function initializeTranscriber() {
   transcriber = await pipeline('automatic-speech-recognition', 'nzhenev/whisper-small-ru-1k-steps-ONNX'); //'Xenova/whisper-base');
@@ -42,7 +43,6 @@ onmessage = async function(event) {
     if (!synthesizer) {
       await initializeSynthesizer();
     }
-    const speaker_embeddings = 'https://huggingface.co/datasets/Xenova/transformers.js-docs/resolve/main/speaker_embeddings.bin';
     const output1 = await transcriber(audio,  { speaker_embeddings }); //, { language: 'russian', task: 'transcribe' });
     const stt_result = output1.text;
     postMessage({ type: 'stt_result', stt_result });
