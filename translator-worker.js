@@ -23,7 +23,7 @@ async function initializeGenerator() {
 initializeGenerator();
 
 async function initializeSynthesizer() {
-  synthesizer = await pipeline("text-to-speech", "onnx-community/Kokoro-82M-v1.0-ONNX"); //"Xenova/mms-tts-eng");
+  synthesizer = await pipeline("text-to-speech", "Xenova/speecht5_tts"); //"Xenova/mms-tts-eng");
   // Notify the main thread that the generator is ready
   postMessage({ type: 'ready' });
 }
