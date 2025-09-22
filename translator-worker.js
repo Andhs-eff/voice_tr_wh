@@ -23,7 +23,7 @@ async function initializeGenerator() {
 initializeGenerator();
 
 async function initializeSynthesizer() {
-  synthesizer = await pipeline("text-to-speech", "Xenova/speecht5_tts"); //"Xenova/mms-tts-eng");
+  synthesizer = await pipeline("text-to-speech", "Xenova/speecht5_tts", { dtype: 'fp32' }); //"Xenova/mms-tts-eng");
   // Notify the main thread that the generator is ready
   postMessage({ type: 'ready' });
 }
@@ -42,7 +42,7 @@ onmessage = async function(event) {
     if (!synthesizer) {
       await initializeSynthesizer();
     }
-    const output1 = await transcriber(audio, { language: 'russian', task: 'transcribe' });
+    const output1 = await transcriber(audio); //, { language: 'russian', task: 'transcribe' });
     const stt_result = output1.text;
     postMessage({ type: 'stt_result', stt_result });
     const output2 = await generator(stt_result);
